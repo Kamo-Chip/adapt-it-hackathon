@@ -9,101 +9,94 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import toast, { Toaster } from 'react-hot-toast';
+
+const insertFail = () => toast.error('Oops something went wrong!');
+const insertSuccess = () => toast.success('Listing has been created!');
 
 // Initialize the Supabase client
 const supabase = createClient();
 
-// Define the Zod schema for form validation
+// Define the Zod schema for form validation, where truckId is expected to be a number
 const formSchema = z.object({
   from: z.string().min(1, "Pickup location is required"),
   to: z.string().min(1, "Delivery location is required"),
   dateLeaving: z.string().min(1, "Date and time for leaving is required").refine(
-    (val) => !isNaN(Date.parse(val)), // Ensures it's a valid date-time format
+    (val) => !isNaN(Date.parse(val)),
     { message: "Invalid date and time" }
   ),
   dateArriving: z.string().min(1, "Date and time for arriving is required").refine(
-    (val) => !isNaN(Date.parse(val)), // Ensures it's a valid date-time format
+    (val) => !isNaN(Date.parse(val)),
     { message: "Invalid date and time" }
   ),
   price: z.number().min(1, "Rates must be greater than 0"),
-  truckId: z.string().min(1, "Truck selection is required"), // Updated field
+  truckId: z.number().min(1, "Truck selection is required"), // truckId is now expected to be a number
 });
 
 // Define the form types using the Zod schema
 type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function Component() {
-  const [trucks, setTrucks] = useState<{ id: string; type: string }[]>([]);
+  const [trucks, setTrucks] = useState<{ id: number; type: string }[]>([]); // Truck ID is a number
+  const [truckType, setTruckType] = useState<number | undefined>(undefined); // Hold selected truck ID as a number
 
-  // Initialize react-hook-form with Zod validation
   const {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
   });
 
-  // Fetch trucks from Supabase
   const fetchTrucks = async () => {
     try {
       const { data, error } = await supabase.from("truckss").select("id, type");
       if (error) {
-        console.error("Error fetching trucks:", error.message);
+        toast.error("Error fetching trucks: " + error.message);
       } else {
-        console.log("Data fetched successfully:", data);
         setTrucks(data || []);
       }
     } catch (error) {
-      console.error("Unexpected error fetching trucks:", error);
+      toast.error("Unexpected error fetching trucks.");
     }
   };
 
-  // Use useEffect to trigger the fetch on page load
   useEffect(() => {
     fetchTrucks();
   }, []);
 
-  // Handle form submission
   const onSubmit = async (data: FormSchemaType) => {
-    const generateRandomId = () => Math.floor(Math.random() * 1000000000); // Large range for uniqueness
+    const generateRandomId = () => Math.floor(Math.random() * 1000000000);
 
     try {
-      // Format data before inserting into the database
       const formattedData = {
-        id: generateRandomId(), // Use the random integer ID
+        id: generateRandomId(),
         from: data.from,
         to: data.to,
         dateLeaving: new Date(data.dateLeaving).toISOString(),
         dateArriving: new Date(data.dateArriving).toISOString(),
         expectedCost: data.price,
-        truck: data.truckId, // Ensure truckId is included
+        truck: data.truckId, // truckId is sent as a number
       };
 
-      const { error } = await supabase
-        .from("listings")
-        .insert([formattedData]); // Insert the formatted data
+      const { error } = await supabase.from("listings").insert([formattedData]);
 
       if (error) {
-        console.error("Error inserting data:", error);
+        insertFail();
       } else {
-        console.log("Data successfully inserted!");
+        insertSuccess();
+        reset(); // Reset the form after successful submission
       }
     } catch (error) {
-      console.error("Unexpected error during submission:", error);
+      toast.error("Unexpected error during submission.");
     }
   };
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
+      <Toaster />
       <Card>
         <CardContent>
           <form className="grid gap-6 mt-2" onSubmit={handleSubmit(onSubmit)}>
@@ -146,31 +139,32 @@ export default function Component() {
               {errors.price && <p className="text-red-500">{errors.price.message}</p>}
             </div>
 
-            {/* Truck Selection */}
+            {/* Truck Selection using Radio Buttons */}
             <div className="grid gap-2">
               <Label htmlFor="truckId">Truck Type</Label>
-              <div className="flex items-center">
-                <Controller
-                  name="truckId"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      onValueChange={(selectedValue) => field.onChange(selectedValue)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a truck type" value={field.value} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {trucks.map((truck) => (
-                          <SelectItem key={truck.id} value={truck.id}>
-                            {truck.type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
+              <Controller
+                name="truckId"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    {trucks.map((truck) => (
+                      <label key={truck.id} className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          value={truck.id.toString()} // Radio inputs send values as strings, so convert to string here
+                          checked={truckType === truck.id}
+                          onChange={() => {
+                            const truckIdNumber = Number(truck.id); // Convert the value back to a number
+                            setTruckType(truckIdNumber); // Update state with truck ID as a number
+                            field.onChange(truckIdNumber); // Pass the number to react-hook-form
+                          }}
+                        />
+                        <span>{truck.type}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              />
               {errors.truckId && <p className="text-red-500">{errors.truckId.message}</p>}
             </div>
 
