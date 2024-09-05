@@ -1,5 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { AlignJustify, Truck, Route, CirclePlus } from 'lucide-react';
 
 const NavBar = ({ children }) => {
   return (
@@ -12,15 +21,35 @@ const NavBar = ({ children }) => {
         />
         <div className="text-lg font-semibold">Adapt Trucking</div>
       </div>
-      
+
       <div className="flex gap-4">
         {/* Navigation links */}
-        <Link href="/listing" className="hover:text-gray-400">
-          Loads
-        </Link>
-        <Link href="/create" className="hover:text-gray-400">
-          Add Load
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <AlignJustify />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Truck />
+              <Link href="/listings" className="hover:text-gray-400 ml-2">
+                Loads
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <CirclePlus />
+              <Link href="/create" className="hover:text-gray-400 ml-2">
+                Add Load
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Route />
+              <Link href="/mylistings" className="hover:text-gray-400 ml-2">
+                My Loads
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Authentication buttons */}
         {children}
