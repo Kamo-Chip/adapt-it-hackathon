@@ -1,10 +1,33 @@
+"use client"
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { createClient } from "@/utils/client"
+
+
+const supabase = createClient()
 
 export default function Component() {
+  // Function to handle the Transporter button click
+  const handleTransporter = async () => {
+    const { data, error } = await supabase
+      .from('roles')
+      .insert([
+        { user: 'someValue', role: 'transporter' },
+      ])
+      .select()
+
+    if (error) {
+      console.error("Error inserting data: ", error.message)
+    } else {
+      console.log("Data inserted: ", data)
+    }
+  }
+
   return (
     <main className="w-full min-h-screen bg-background flex items-center justify-center p-4">
       <div className="container grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+        {/* Transporter Card */}
         <Card className="bg-primary text-primary-foreground p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Transporter</CardTitle>
@@ -14,15 +37,16 @@ export default function Component() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="mt-6">
-            <Link
-              href="#"
+            <Button
+              onClick={handleTransporter}  // Call the function on click
               className="inline-flex h-10 items-center justify-center rounded-md bg-primary-foreground px-8 text-sm font-medium text-primary shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
             >
               Become a Transporter
-            </Link>
+            </Button>
           </CardFooter>
         </Card>
+
+        {/* Consignee Card */}
         <Card className="bg-secondary text-secondary-foreground p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Consignee</CardTitle>
