@@ -1,31 +1,44 @@
-"use client"
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { createClient } from "@/utils/client"
+"use client";
 
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/client";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";  // Import useRouter for navigation
+import toast, { Toaster } from 'react-hot-toast';
 
-const supabase = createClient()
+const loginError = () => toast.error('Oops something went wrong!');
+
+const supabase = createClient();
 
 export default function Component() {
-  // Function to handle the Transporter button click
-  const handleTransporter = async () => {
+  const router = useRouter();  // Initialize router
+  const { userId } = useAuth();  // Get userId from useAuth
+
+  // Function to handle button clicks and redirection
+  const handleTransporter = async (user: string | null | undefined, role: string, redirectPath: string): Promise<void> => {
+    if (!user) {
+      console.error('User is not logged in');
+      return;
+    }
+
     const { data, error } = await supabase
       .from('roles')
-      .insert([
-        { user: 'someValue', role: 'transporter' },
-      ])
-      .select()
+      .insert([{ user: user, role: role }])
+      .select();
 
     if (error) {
-      console.error("Error inserting data: ", error.message)
+      loginError();
+      console.error('Error inserting data: ', error.message);
     } else {
-      console.log("Data inserted: ", data)
+      console.log('Data inserted: ', data);
+      router.push(redirectPath);  // Redirect to the desired route after success
     }
-  }
+  };
 
   return (
     <main className="w-full min-h-screen bg-background flex items-center justify-center p-4">
+      <Toaster />
       <div className="container grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
         {/* Transporter Card */}
         <Card className="bg-primary text-primary-foreground p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
@@ -38,7 +51,7 @@ export default function Component() {
           </CardHeader>
           <CardFooter className="mt-6">
             <Button
-              onClick={handleTransporter}  // Call the function on click
+              onClick={() => handleTransporter(userId, "transporter", "/listings")}  // Redirect to transporter dashboard
               className="inline-flex h-10 items-center justify-center rounded-md bg-primary-foreground px-8 text-sm font-medium text-primary shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
             >
               Become a Transporter
@@ -56,16 +69,15 @@ export default function Component() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="mt-6">
-            <Link
-              href="#"
+            <Button
+              onClick={() => handleTransporter(userId, "business", "/listings")}  // Redirect to consignee dashboard
               className="inline-flex h-10 items-center justify-center rounded-md bg-secondary-foreground px-8 text-sm font-medium text-secondary shadow transition-colors hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
             >
               Become a Consignee
-            </Link>
+            </Button>
           </CardFooter>
         </Card>
       </div>
     </main>
-  )
+  );
 }
