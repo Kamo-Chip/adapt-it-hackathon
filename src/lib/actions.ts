@@ -3,10 +3,10 @@
 import { createClient } from "@/utils/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import axios from 'axios';
+import axios from "axios";
 
 async function sendEmail(toEmail: string, statusMessage: string) {
-  const url = 'https://api.sendgrid.com/v3/mail/send';
+  const url = "https://api.sendgrid.com/v3/mail/send";
   const apiKey = process.env.NEXT_PUBLIC_SENDGRID_API_KEY;
 
   const emailData = {
@@ -15,39 +15,38 @@ async function sendEmail(toEmail: string, statusMessage: string) {
         to: [
           {
             email: toEmail, // Use the toEmail parameter
-            name: 'John Doe' // You can pass name dynamically if needed
-          }
+            name: "John Doe", // You can pass name dynamically if needed
+          },
         ],
-        subject: 'Status Update', // You can modify this to a dynamic subject
-      }
+        subject: "Status Update", // You can modify this to a dynamic subject
+      },
     ],
     content: [
       {
-        type: 'text/plain',
-        value: statusMessage // Use the statusMessage parameter
-      }
+        type: "text/plain",
+        value: statusMessage, // Use the statusMessage parameter
+      },
     ],
     from: {
-      email: 'office@sebenzo.africa',
-      name: 'Sam Smith'
+      email: "office@sebenzo.africa",
+      name: "Sam Smith",
     },
     reply_to: {
-      email: 'office@sebenzo.africa',
-      name: 'Sam Smith'
-    }
+      email: "office@sebenzo.africa",
+      name: "Sam Smith",
+    },
   };
 
   try {
     const response = await axios.post(url, emailData, {
       headers: {
         Authorization: `Bearer ${apiKey}`, // Fixed Authorization header syntax
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
-    console.log('Email sent successfully:', response.data);
+    console.log("Email sent successfully:", response.data);
   } catch (error) {
-    const errorMessage = error?.response?.data || error?.message || 'Unknown error occurred';
-    console.error('Error sending email:', errorMessage);
+    console.error("Error sending email:");
   }
 }
 
@@ -77,13 +76,16 @@ export async function createBidding(
         },
       ])
       .select();
-      const user = await currentUser();
-      console.log(user);
-      const email = user && user.emailAddresses && user.emailAddresses.length > 0 ? user.emailAddresses[0].emailAddress : "No email available";
+    const user = await currentUser();
+    console.log(user);
+    const email =
+      user && user.emailAddresses && user.emailAddresses.length > 0
+        ? user.emailAddresses[0].emailAddress
+        : "No email available";
 
-      console.log("Email Address:", email);
+    console.log("Email Address:", email);
 
-      sendEmail(email, "You have received a bid on your listing!");
+    sendEmail(email, "You have received a bid on your listing!");
     if (error) throw new Error(`Supabase error: ${error}`);
     return {
       message: "Successfully placed bid",
@@ -144,7 +146,10 @@ export async function handleBid(
     if (fields.dialogType === "reject") {
       const user = await currentUser();
       console.log(user);
-      const email = user && user.emailAddresses && user.emailAddresses.length > 0 ? user.emailAddresses[0].emailAddress : "No email available";
+      const email =
+        user && user.emailAddresses && user.emailAddresses.length > 0
+          ? user.emailAddresses[0].emailAddress
+          : "No email available";
 
       console.log("Email Address:", email);
 
@@ -157,7 +162,10 @@ export async function handleBid(
     } else {
       const user = await currentUser();
       console.log(user);
-      const email = user && user.emailAddresses && user.emailAddresses.length > 0 ? user.emailAddresses[0].emailAddress : "No email available";
+      const email =
+        user && user.emailAddresses && user.emailAddresses.length > 0
+          ? user.emailAddresses[0].emailAddress
+          : "No email available";
 
       console.log("Email Address:", email);
       sendEmail(email, "Your bid has been accepted!");

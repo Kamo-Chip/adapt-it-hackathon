@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/client";
 import { useAuth } from "@clerk/nextjs";
-import { DollarSign, Package, Star, Truck } from "lucide-react";
+import { DollarSign, Package, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -132,22 +132,21 @@ export default function Home() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <div className="flex flex-col space-y-2 border-gray-800 p-4 rounded-lg">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  "AdaptTrucking has revolutionized our logistics. We've cut
-                  costs and improved efficiency significantly."
+                  {"AdaptTrucking has revolutionized our logistics. We've cut costs and improved efficiency significantly."}
                 </p>
                 <p className="font-semibold">- John D., Consignee</p>
               </div>
               <div className="flex flex-col space-y-2 border-gray-800 p-4 rounded-lg">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  "I'm making money on trips that used to be empty. It's a
-                  game-changer for us truckers."
+                  {"I'm making money on trips that used to be empty. It's a game-changer for us truckers."}
                 </p>
                 <p className="font-semibold">- Sarah L., Trucker</p>
               </div>
               <div className="flex flex-col space-y-2 border-gray-800 p-4 rounded-lg">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  "The platform is user-friendly and the support team is always
-                  helpful. Highly recommended!"
+                  {
+                    "The platform is user-friendly and the support team is always helpful. Highly recommended!"
+                  }
                 </p>
                 <p className="font-semibold">- Mike R., Logistics Manager</p>
               </div>

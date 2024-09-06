@@ -27,7 +27,7 @@ async function OpenBidsTable({
   const from = (currentPage - 1) * LISTINGS_PER_PAGE;
   const to = currentPage * LISTINGS_PER_PAGE - 1;
 
-  let bids: any[] = [];
+  let bids = [];
   let totalCount = 0;
 
   const query = supabase
@@ -68,12 +68,12 @@ async function OpenBidsTable({
   }
 
   // Group the bids by their corresponding listing
-  const groupedBids = listings.map((listing) => {
-    return {
-      listing,
-      bids: bids.filter((bid) => bid.listingId === listing.id),
-    };
-  });
+  // const groupedBids = listings.map((listing) => {
+  //   return {
+  //     listing,
+  //     bids: bids.filter((bid) => bid.listingId === listing.id),
+  //   };
+  // });
 
   totalCount = count || 0;
   if (!bids) {

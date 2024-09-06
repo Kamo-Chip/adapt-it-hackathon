@@ -1,7 +1,6 @@
 "use client";
 
-import { createClient } from "@/utils/client";
-import { SignOutButton, useAuth } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 import {
   ArrowLeftStartOnRectangleIcon,
   BuildingStorefrontIcon,
@@ -12,8 +11,7 @@ import {
 } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import TooltipWrapper from "./wrappers/tooltip-wrapper";
 
 const TRUCKER_NAV_LINKS = [

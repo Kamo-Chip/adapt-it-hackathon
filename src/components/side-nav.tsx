@@ -1,9 +1,9 @@
 "use client";
 import { createClient } from "@/utils/client";
-import NavLinks from "./nav-links";
-import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import NavLinks from "./nav-links";
 
 function SideNav() {
   const supabase = createClient();
@@ -13,7 +13,7 @@ function SideNav() {
   const pathname = usePathname();
   const getUserRole = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("roles")
         .select("role")
         .eq("user", userId);

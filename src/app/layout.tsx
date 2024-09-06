@@ -1,17 +1,12 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
 import NavBar from "@/components/nav-bar";
 import {
   ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useAuth,
+  SignedOut
 } from "@clerk/nextjs";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Toaster } from "sonner";
-import { getAuth } from "@clerk/nextjs/server";
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

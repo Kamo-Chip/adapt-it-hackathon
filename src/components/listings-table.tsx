@@ -1,12 +1,7 @@
 import { ListingSearchParams } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/utils/server";
-import {
-  addDays,
-  endOfDay,
-  format,
-  startOfDay
-} from "date-fns";
+import { addDays, endOfDay, format, startOfDay } from "date-fns";
 import ListingsBidDialog from "./listings-bid-dialog";
 import ListingsPagination from "./pagination";
 import {
@@ -31,7 +26,7 @@ async function ListingTable({
   const from = (currentPage - 1) * LISTINGS_PER_PAGE;
   const to = currentPage * LISTINGS_PER_PAGE - 1;
 
-  let listings: any[] = [];
+  let listings = [];
   let totalCount = 0;
 
   const query = supabase

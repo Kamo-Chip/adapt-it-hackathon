@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import TooltipWrapper from "./wrappers/tooltip-wrapper";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/solid";
+import { Listing } from "@/lib/types";
 
 function ListingsBidDialog({ listing }: { listing: Listing }) {
   const initialState: CreateBiddingActionState = { message: "" };

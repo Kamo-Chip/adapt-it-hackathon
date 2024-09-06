@@ -1,6 +1,7 @@
+import { ListingSearchParams } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/utils/server";
 import { addDays, endOfDay, format, startOfDay } from "date-fns";
-import ListingsBidDialog from "../listings-bid-dialog";
 import ListingsPagination from "../pagination";
 import {
   Table,
@@ -12,8 +13,6 @@ import {
   TableRow,
 } from "../ui/table";
 import TruckerListingDialog from "./listings-dialog";
-import { formatCurrency } from "@/lib/utils";
-import { ListingSearchParams } from "@/lib/types";
 
 export const LISTINGS_PER_PAGE = 10;
 
@@ -27,7 +26,7 @@ async function TruckerListingTable({
   const from = (currentPage - 1) * LISTINGS_PER_PAGE;
   const to = currentPage * LISTINGS_PER_PAGE - 1;
 
-  let listings: any[] = [];
+  let listings = [];
   let totalCount = 0;
 
   const query = supabase
