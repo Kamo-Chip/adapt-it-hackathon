@@ -1,8 +1,55 @@
 "use server";
 
 import { createClient } from "@/utils/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import axios from 'axios';
+
+async function sendEmail(toEmail: string, statusMessage: string) {
+  const url = 'https://api.sendgrid.com/v3/mail/send';
+  const apiKey = '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';
+
+  const emailData = {
+    personalizations: [
+      {
+        to: [
+          {
+            email: toEmail, // Use the toEmail parameter
+            name: 'John Doe' // You can pass name dynamically if needed
+          }
+        ],
+        subject: 'Status Update', // You can modify this to a dynamic subject
+      }
+    ],
+    content: [
+      {
+        type: 'text/plain',
+        value: statusMessage // Use the statusMessage parameter
+      }
+    ],
+    from: {
+      email: 'office@sebenzo.africa',
+      name: 'Sam Smith'
+    },
+    reply_to: {
+      email: 'office@sebenzo.africa',
+      name: 'Sam Smith'
+    }
+  };
+
+  try {
+    const response = await axios.post(url, emailData, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`, // Fixed Authorization header syntax
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log('Email sent successfully:', response.data);
+  } catch (error) {
+    const errorMessage = error?.response?.data || error?.message || 'Unknown error occurred';
+    console.error('Error sending email:', errorMessage);
+  }
+}
 
 export type CreateBiddingActionState = {
   message: string;
@@ -30,6 +77,13 @@ export async function createBidding(
         },
       ])
       .select();
+      const user = await currentUser();
+      console.log(user);
+      const email = user && user.emailAddresses && user.emailAddresses.length > 0 ? user.emailAddresses[0].emailAddress : "No email available";
+
+      console.log("Email Address:", email);
+
+      sendEmail(email, "You have received a bid on your listing!");
     if (error) throw new Error(`Supabase error: ${error}`);
     return {
       message: "Successfully placed bid",
@@ -49,7 +103,7 @@ export async function deleteListing(
   formData: FormData
 ): Promise<CreateBiddingActionState> {
   const supabase = createClient();
-  const { userId, use } = auth();
+  const { userId } = auth();
   const fields = Object.fromEntries(formData.entries());
 
   try {
@@ -86,14 +140,26 @@ export async function handleBid(
       throw new Error("Missing fields");
     let dbError;
     if (fields.dialogType === "reject") {
-      sendEmail('rejected');
+      const user = await currentUser();
+      console.log(user);
+      const email = user && user.emailAddresses && user.emailAddresses.length > 0 ? user.emailAddresses[0].emailAddress : "No email available";
+
+      console.log("Email Address:", email);
+
+      sendEmail(email, "We are sorry to say that your bid has been rejected");
       const { error } = await supabase
         .from("bids")
         .delete()
         .eq("id", fields.bidId);
       dbError = error;
     } else {
-      sendEmail('accepted');
+      const user = await currentUser();
+      console.log(user);
+      const email = user && user.emailAddresses && user.emailAddresses.length > 0 ? user.emailAddresses[0].emailAddress : "No email available";
+
+      console.log("Email Address:", email);
+      sendEmail(email, "Your bid has been accepted!");
+      //sendEmail('accepted');
       // const { error } = await supabase
       //   .from("bids")
       //   .delete()
