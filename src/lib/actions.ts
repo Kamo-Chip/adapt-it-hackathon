@@ -7,7 +7,7 @@ import axios from 'axios';
 
 async function sendEmail(toEmail: string, statusMessage: string) {
   const url = 'https://api.sendgrid.com/v3/mail/send';
-  const apiKey = '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';
+  const apiKey = process.env.NEXT_PUBLIC_SENDGRID_API_KEY;
 
   const emailData = {
     personalizations: [
