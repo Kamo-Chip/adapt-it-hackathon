@@ -1,14 +1,8 @@
 import { ListingSearchParams } from "@/app/(signed-in)/listings/page";
 import { createClient } from "@/utils/server";
-import {
-  addDays,
-  addHours,
-  endOfDay,
-  format,
-  nextDay,
-  startOfDay,
-} from "date-fns";
-import ListingsPagination from "./pagination";
+import { addDays, endOfDay, format, startOfDay } from "date-fns";
+import ListingsBidDialog from "../listings-bid-dialog";
+import ListingsPagination from "../pagination";
 import {
   Table,
   TableBody,
@@ -17,12 +11,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import ListingsBidDialog from "./listings-bid-dialog";
+} from "../ui/table";
+import TruckerListingDialog from "./listings-dialog";
 
 export const LISTINGS_PER_PAGE = 10;
 
-async function ListingTable({
+async function TruckerListingTable({
   searchParams,
 }: {
   searchParams: ListingSearchParams;
@@ -97,7 +91,7 @@ async function ListingTable({
             </TableCell>
             <TableCell>{listing.distance}</TableCell>
             <TableCell>{listing.expectedCost}</TableCell>
-            <ListingsBidDialog listing={listing} />
+            <TruckerListingDialog listing={listing} />
           </TableRow>
         ))}
       </TableBody>
@@ -112,4 +106,4 @@ async function ListingTable({
   );
 }
 
-export default ListingTable;
+export default TruckerListingTable;

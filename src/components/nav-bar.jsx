@@ -1,16 +1,26 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { AlignJustify, CirclePlus, Route, Truck } from 'lucide-react';
-import Link from 'next/link';
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SignInButton, useAuth } from "@clerk/nextjs";
+import clsx from "clsx";
+import { AlignJustify, CirclePlus, Route, Truck } from "lucide-react";
+import Link from "next/link";
 
-const NavBar = ({ children }) => {
+const NavBar = () => {
+  const { isSignedIn } = useAuth();
   return (
-    <nav className="bg-black text-white py-2 px-4 flex justify-between items-center">
+    <nav
+      className={clsx(
+        "bg-black text-white py-2 px-4 flex justify-between items-center",
+        { "hidden ": isSignedIn }
+      )}
+    >
       <div className="flex items-center space-x-4">
         <img
           src="https://ttgbsdnzfrtznpmyzqga.supabase.co/storage/v1/object/public/resources/delivery.png"
@@ -50,7 +60,7 @@ const NavBar = ({ children }) => {
         </DropdownMenu>
 
         {/* Authentication buttons */}
-        {children}
+        <SignInButton />
       </div>
     </nav>
   );

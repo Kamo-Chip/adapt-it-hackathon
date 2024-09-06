@@ -1,4 +1,4 @@
-type Listing = {
+export type Listing = {
   id: string;
   truckId: string;
   truck: number;
@@ -11,4 +11,12 @@ type Listing = {
   expectedCost: number;
   created_at: string; // ISO date string
   updatedAt: string; // ISO date string
+};
+
+export type Bid = {
+  id: string;
+  created_at: string;
+  price: number;
+  consigneeId: string;
+  listingId: number;
 };

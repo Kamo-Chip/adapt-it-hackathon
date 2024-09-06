@@ -2,11 +2,7 @@
 import ListingFilters from "@/components/listing-filters";
 import ListingsTableSkeleton from "@/components/listings-table-skeleton";
 import PageHeader from "@/components/page-header";
-import { Button } from "@/components/ui/button";
-import DatePicker from "@/components/ui/date-picker";
-import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 const ListingTable = dynamic(() => import("@/components/listings-table"), {
   loading: () => <ListingsTableSkeleton />,
@@ -26,7 +22,7 @@ export default async function Listing({
 }) {
   return (
     <>
-      <PageHeader title="Loads" />
+      <PageHeader title="Listings" />
       <ListingFilters />
       {/* <ListingsTableSkeleton /> */}
       {/* <Suspense fallback={<ListingsTableSkeleton />}> */}

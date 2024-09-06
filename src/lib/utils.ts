@@ -44,3 +44,5 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const USER_TYPE = "consignee";

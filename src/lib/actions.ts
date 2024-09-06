@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/server";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export type CreateBiddingActionState = {
   message: string;
@@ -38,6 +39,76 @@ export async function createBidding(
     console.log("Failed to add bidding: ", error);
     return {
       message: "Failed to add bidding",
+      type: "error",
+    };
+  }
+}
+
+export async function deleteListing(
+  prevState: CreateBiddingActionState,
+  formData: FormData
+): Promise<CreateBiddingActionState> {
+  const supabase = createClient();
+  const { userId } = auth();
+  const fields = Object.fromEntries(formData.entries());
+
+  try {
+    if (!userId || !fields.listingId) throw new Error("Missing fields");
+    const { error } = await supabase
+      .from("listings")
+      .delete()
+      .eq("id", fields.listingId);
+    if (error) throw new Error(`Supabase error: ${error}`);
+    revalidatePath("/my-listings");
+    return {
+      message: "Successfully removed listing",
+      type: "success",
+    };
+  } catch (error) {
+    console.log("Failed to remove listing: ", error);
+    return {
+      message: "Failed to remove listing",
+      type: "error",
+    };
+  }
+}
+
+export async function handleBid(
+  prevState: CreateBiddingActionState,
+  formData: FormData
+): Promise<CreateBiddingActionState> {
+  const supabase = createClient();
+  const { userId } = auth();
+  const fields = Object.fromEntries(formData.entries());
+
+  try {
+    if (!userId || !fields.bidId || !fields.dialogType)
+      throw new Error("Missing fields");
+    let dbError;
+    if (fields.dialogType === "reject") {
+      const { error } = await supabase
+        .from("bids")
+        .delete()
+        .eq("id", fields.bidId);
+      dbError = error;
+    } else {
+      // const { error } = await supabase
+      //   .from("bids")
+      //   .delete()
+      //   .eq("id", fields.bidId);
+      // dbError = error;
+    }
+
+    if (dbError) throw new Error(`Supabase error: ${dbError}`);
+    revalidatePath("/open-bids");
+    return {
+      message: `Successfully ${fields.dialogType}ed bid`,
+      type: "success",
+    };
+  } catch (error) {
+    console.log(`Failed to ${fields.dialogType} bidding: `, error);
+    return {
+      message: `Failed to ${fields.dialogType} bidding`,
       type: "error",
     };
   }

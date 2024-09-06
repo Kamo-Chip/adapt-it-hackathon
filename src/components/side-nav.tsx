@@ -4,14 +4,13 @@ import NavLinks from "./nav-links";
 function SideNav() {
   return (
     <nav className="h-full flex flex-col">
-      <div className="bg-primary flex flex-col h-full text-primary-foreground p-2 pt-6 items-center">
-        <Image
-          src="/assets/vanine-logo.svg"
-          alt="vanine logo"
-          width={50}
-          height={30}
-          className="mb-12"
+      <div className="bg-black flex flex-col h-full text-white p-2 pt-6 items-center">
+        <img
+          src="https://ttgbsdnzfrtznpmyzqga.supabase.co/storage/v1/object/public/resources/delivery.png"
+          alt="Logo"
+          className="h-16 w-16 p-2 mb-14 bg-white rounded-full object-cover object-center"
         />
+
         <NavLinks />
       </div>
     </nav>

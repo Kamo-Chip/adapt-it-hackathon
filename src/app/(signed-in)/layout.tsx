@@ -1,5 +1,5 @@
 import SideNav from "@/components/side-nav";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -14,7 +14,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         </SignedIn>
       </div>
 
-      <div className="flex-none w-16">
+      <div className="flex-none w-56">
         <SideNav />
       </div>
 
