@@ -1,6 +1,7 @@
 "use client";
 
-import { SignOutButton } from "@clerk/nextjs";
+import { createClient } from "@/utils/client";
+import { SignOutButton, useAuth } from "@clerk/nextjs";
 import {
   ArrowLeftStartOnRectangleIcon,
   BuildingStorefrontIcon,
@@ -11,9 +12,9 @@ import {
 } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import TooltipWrapper from "./wrappers/tooltip-wrapper";
-import { USER_TYPE } from "@/lib/utils";
 
 const TRUCKER_NAV_LINKS = [
   {
@@ -56,13 +57,15 @@ const CONSIGNEE_NAV_LINKS = [
   },
 ];
 
-function NavLinks() {
+function NavLinks({ role }: { role: string | undefined }) {
   const pathname = usePathname();
 
   const NAV_LINKS =
-    localStorage.getItem("role") === "business"
+    role === "business"
       ? CONSIGNEE_NAV_LINKS
-      : TRUCKER_NAV_LINKS;
+      : role === "transporter"
+      ? TRUCKER_NAV_LINKS
+      : [];
   return (
     <ul className="flex flex-col h-full w-full gap-4">
       {NAV_LINKS.map((link, idx) => {

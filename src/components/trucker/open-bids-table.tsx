@@ -1,7 +1,6 @@
-
 import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/utils/server";
-import { format } from "date-fns";
+import { addDays, endOfDay, format, startOfDay } from "date-fns";
 import ListingsPagination from "../pagination";
 import { Badge } from "../ui/badge";
 import {
@@ -36,17 +35,17 @@ async function OpenBidsTable({
     .select("*", { count: "exact" })
     .range(from, to);
 
-  // if (searchParams.date) {
-  //   query
-  //     .gte(
-  //       "dateLeaving",
-  //       addDays(startOfDay(new Date(searchParams.date)), 1).toISOString()
-  //     )
-  //     .lte(
-  //       "dateLeaving",
-  //       addDays(endOfDay(new Date(searchParams.date)), 1).toISOString()
-  //     );
-  // }
+  if (searchParams.date) {
+    query
+      .gte(
+        "created_at",
+        addDays(startOfDay(new Date(searchParams.date)), 1).toISOString()
+      )
+      .lte(
+        "created_at",
+        addDays(endOfDay(new Date(searchParams.date)), 1).toISOString()
+      );
+  }
 
   const { data, count, error } = await query;
 

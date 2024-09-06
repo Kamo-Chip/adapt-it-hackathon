@@ -52,8 +52,10 @@ export async function deleteListing(
   const { userId, use } = auth();
   const fields = Object.fromEntries(formData.entries());
 
+  console.log(userId);
+  console.log(fields.listingId);
   try {
-    if (!userId || !fields.listingId) throw new Error("Missing fields");
+    if (!fields.listingId) throw new Error("Missing fields");
     const { error } = await supabase
       .from("listings")
       .delete()

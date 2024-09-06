@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/pagination";
 import { generatePagination } from "@/lib/utils";
 import clsx from "clsx";
+import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Button } from "./ui/button";
 
 function ListingsPagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -42,12 +44,12 @@ function ListingsPagination({ totalPages }: { totalPages: number }) {
             {page === "..." ? (
               <PaginationEllipsis />
             ) : (
-              <PaginationLink
-                href={createPageURL(page)}
-                isActive={currentPage === page}
+              <Button
+                asChild
+                variant={currentPage === page ? "outline" : "ghost"}
               >
-                {page}
-              </PaginationLink>
+                <Link href={createPageURL(page)}>{page}</Link>
+              </Button>
             )}
           </PaginationItem>
         ))}

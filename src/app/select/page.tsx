@@ -55,6 +55,7 @@ export default function Component() {
     role: string,
     redirectPath: string
   ): Promise<void> => {
+    // Check if user is logged in
     if (!user) {
       console.error("User is not logged in");
       return;
@@ -65,13 +66,22 @@ export default function Component() {
       .insert([{ user: user, role: role, email: email }])
       .select();
 
-    if (error) {
-      loginError();
-      console.error("Error inserting data: ", error.message);
-    } else {
+      if (error) {
+        console.error("Error inserting data: ", error.message);
+        loginError();
+        return;
+      }
+
       console.log("Data inserted: ", data);
+
+      // Save role in localStorage
       localStorage.setItem("role", role);
-      router.push(redirectPath); // Redirect to the desired route after success
+
+      // Ensure redirection happens after the insert completes
+      await router.push(redirectPath);
+    } catch (err) {
+      console.error("Unexpected error occurred: ", err);
+      loginError();
     }
   };
 

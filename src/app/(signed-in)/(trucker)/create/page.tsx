@@ -197,11 +197,11 @@ export default function Component() {
   return (
     <>
       <PageHeader title="Create Listing" />
-      <div className="container mx-auto max-w-4xl px-4 py-8">
+      <div className="container mx-auto max-w-4xl px-4 py-0">
         <Toaster />
         <Card>
           <CardContent>
-            <form className="grid gap-6 mt-2" onSubmit={handleSubmit(onSubmit)}>
+            <form className="grid gap-6 mt" onSubmit={handleSubmit(onSubmit)}>
               {/* From - Pickup location */}
               <div className="grid gap-2 mt-4">
                 <Label htmlFor="from">From</Label>
@@ -310,7 +310,7 @@ export default function Component() {
               <div className="flex justify-end">
                 <Button
                   type="submit"
-                  className={`w-full sm:w-auto ${
+                  className={`w-full  mx-auto sm:w-auto ${
                     isSubmitting ? "bg-gray-400 cursor-not-allowed" : ""
                   }`}
                   disabled={isSubmitting}
