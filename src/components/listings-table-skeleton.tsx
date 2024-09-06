@@ -22,7 +22,7 @@ function ListingsTableSkeleton() {
         <TableHead>Leaving</TableHead>
         <TableHead>Arriving</TableHead>
         <TableHead>Distance(km)</TableHead>
-        <TableHead>Expected Cost(R)</TableHead>
+        <TableHead>Ask Price(R)</TableHead>
       </TableHeader>
       <TableBody>
         {skeletonRows.map((_, index) => (
