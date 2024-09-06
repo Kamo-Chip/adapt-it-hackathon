@@ -5,6 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const formatCurrency = (amount: number) => {
+  return amount.toLocaleString("en-ZA", {
+    style: "currency",
+    currency: "ZAR",
+  });
+};
+
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.

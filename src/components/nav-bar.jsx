@@ -1,14 +1,12 @@
-import React from 'react';
-import Link from 'next/link';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { AlignJustify, Truck, Route, CirclePlus } from 'lucide-react';
+import { AlignJustify, CirclePlus, Route, Truck } from 'lucide-react';
+import Link from 'next/link';
 
 const NavBar = ({ children }) => {
   return (

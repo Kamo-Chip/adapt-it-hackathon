@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -12,10 +11,35 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = useState<Date>();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
+  type ListingFilter = {
+    type: "from" | "to" | "date";
+    value: string;
+  };
+  const setFilters = (filter: ListingFilter) => {
+    const params = new URLSearchParams(searchParams);
+    if (filter.type) {
+      params.set("date", filter.value);
+    } else {
+      params.delete(filter.type);
+    }
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    if (date) {
+      setFilters({ type: "date", value: date?.toISOString().split("T")[0] });
+    }
+  }, [date]);
+  
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -27,7 +51,7 @@ export default function DatePicker() {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Date</span>}
+          {date ? format(date, "dd MMM") : <span>Date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

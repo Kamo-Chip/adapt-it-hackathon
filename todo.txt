@@ -1,0 +1,1 @@
+- Add trucker details instead of id
