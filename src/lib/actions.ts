@@ -49,7 +49,7 @@ export async function deleteListing(
   formData: FormData
 ): Promise<CreateBiddingActionState> {
   const supabase = createClient();
-  const { userId } = auth();
+  const { userId, use } = auth();
   const fields = Object.fromEntries(formData.entries());
 
   try {
@@ -86,12 +86,14 @@ export async function handleBid(
       throw new Error("Missing fields");
     let dbError;
     if (fields.dialogType === "reject") {
+      sendEmail('rejected');
       const { error } = await supabase
         .from("bids")
         .delete()
         .eq("id", fields.bidId);
       dbError = error;
     } else {
+      sendEmail('accepted');
       // const { error } = await supabase
       //   .from("bids")
       //   .delete()

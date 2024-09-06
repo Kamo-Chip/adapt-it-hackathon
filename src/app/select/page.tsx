@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -10,8 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/client";
 import { useAuth } from "@clerk/nextjs";
+import { Clerk } from "@clerk/clerk-js"; // Import Clerk from clerk-js
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import toast, { Toaster } from "react-hot-toast";
+
+// Initialize Clerk object
+const clerk = new Clerk("pk_test_Z2VudGxlLXBlYWNvY2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA");
 
 const loginError = () => toast.error("Oops something went wrong!");
 
@@ -20,6 +25,29 @@ const supabase = createClient();
 export default function Component() {
   const router = useRouter(); // Initialize router
   const { userId } = useAuth(); // Get userId from useAuth
+  const [clerkLoaded, setClerkLoaded] = useState(false); // Track Clerk load status
+  const [email, setEmail] = useState('');
+  // Load Clerk in useEffect
+  useEffect(() => {
+    const loadClerk = async () => {
+      try {
+        await clerk.load(); // Load Clerk asynchronously
+        console.log("Clerk loaded successfully");
+        setClerkLoaded(true); // Set state to reflect that Clerk has been loaded
+        console.log(clerk.user?.emailAddresses)
+        if (clerk.user?.emailAddresses) {
+          const email = clerk.user.emailAddresses[0]?.emailAddress; // Extract the first email
+          setEmail(email);
+          console.log("Email Address:", email);
+        }
+      } catch (error) {
+        console.error("Error loading Clerk:", error);
+        loginError();
+      }
+    };
+    
+    loadClerk(); // Call the function to load Clerk when the component mounts
+  }, []);
 
   // Function to handle button clicks and redirection
   const handleTransporter = async (
@@ -34,7 +62,7 @@ export default function Component() {
 
     const { data, error } = await supabase
       .from("roles")
-      .insert([{ user: user, role: role }])
+      .insert([{ user: user, role: role, email: email }])
       .select();
 
     if (error) {
@@ -46,6 +74,10 @@ export default function Component() {
       router.push(redirectPath); // Redirect to the desired route after success
     }
   };
+
+  if (!clerkLoaded) {
+    return <div>Loading...</div>; // Show a loading state until Clerk is loaded
+  }
 
   return (
     <main className="w-full min-h-screen bg-background flex items-center justify-center p-4">
