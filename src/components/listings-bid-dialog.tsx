@@ -15,6 +15,8 @@ import { Input } from "./ui/input";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
+import TooltipWrapper from "./wrappers/tooltip-wrapper";
+import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/solid";
 
 function ListingsBidDialog({ listing }: { listing: Listing }) {
   const initialState: CreateBiddingActionState = { message: "" };
@@ -39,10 +41,13 @@ function ListingsBidDialog({ listing }: { listing: Listing }) {
   }, [state]);
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
-        <Button className="mt-1.5 absolute right-4" variant={"outline"}>
-          Place Bid
-        </Button>
+      <DialogTrigger>
+        <TooltipWrapper
+          tooltipContent={"Place Bid"}
+          triggerContent={
+            <ClipboardDocumentCheckIcon className="mt-0 absolute right-4 w-6 h-6 cursor-pointer" />
+          }
+        />
       </DialogTrigger>
       <DialogContent className="bg-background">
         <DialogHeader>

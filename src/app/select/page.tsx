@@ -16,7 +16,9 @@ import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import toast, { Toaster } from "react-hot-toast";
 
 // Initialize Clerk object
-const clerk = new Clerk("pk_test_Z2VudGxlLXBlYWNvY2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA");
+const clerk = new Clerk(
+  "pk_test_Z2VudGxlLXBlYWNvY2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA"
+);
 
 const loginError = () => toast.error("Oops something went wrong!");
 
@@ -26,7 +28,7 @@ export default function Component() {
   const router = useRouter(); // Initialize router
   const { userId } = useAuth(); // Get userId from useAuth
   const [clerkLoaded, setClerkLoaded] = useState(false); // Track Clerk load status
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   // Load Clerk in useEffect
   useEffect(() => {
     const loadClerk = async () => {
@@ -34,7 +36,7 @@ export default function Component() {
         await clerk.load(); // Load Clerk asynchronously
         console.log("Clerk loaded successfully");
         setClerkLoaded(true); // Set state to reflect that Clerk has been loaded
-        console.log(clerk.user?.emailAddresses)
+        console.log(clerk.user?.emailAddresses);
         if (clerk.user?.emailAddresses) {
           const email = clerk.user.emailAddresses[0]?.emailAddress; // Extract the first email
           setEmail(email);
@@ -45,7 +47,7 @@ export default function Component() {
         loginError();
       }
     };
-    
+
     loadClerk(); // Call the function to load Clerk when the component mounts
   }, []);
 
@@ -55,16 +57,17 @@ export default function Component() {
     role: string,
     redirectPath: string
   ): Promise<void> => {
-    // Check if user is logged in
-    if (!user) {
-      console.error("User is not logged in");
-      return;
-    }
+    try {
+      // Check if user is logged in
+      if (!user) {
+        console.error("User is not logged in");
+        return;
+      }
 
-    const { data, error } = await supabase
-      .from("roles")
-      .insert([{ user: user, role: role, email: email }])
-      .select();
+      const { data, error } = await supabase
+        .from("roles")
+        .insert([{ user: user, role: role, email: email }])
+        .select();
 
       if (error) {
         console.error("Error inserting data: ", error.message);
@@ -78,7 +81,7 @@ export default function Component() {
       localStorage.setItem("role", role);
 
       // Ensure redirection happens after the insert completes
-      await router.push(redirectPath);
+      router.push(redirectPath);
     } catch (err) {
       console.error("Unexpected error occurred: ", err);
       loginError();
