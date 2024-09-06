@@ -1,0 +1,18 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+      {
+        "name": "my-nextjs-repo",
+        "image": "343218179850.dkr.ecr.us-east-1.amazonaws.com/my-nextjs-repo:latest",
+        "essential": true,
+        "memory": 128,
+        "portMappings": [
+          {
+            "containerPort": 3000,
+            "hostPort": 80
+          }
+        ]
+      }
+    ]
+  }
+  
