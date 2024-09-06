@@ -1,5 +1,5 @@
 "use client";
-// import Image from "next/image";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,9 +22,11 @@ const NavBar = () => {
       )}
     >
       <div className="flex items-center space-x-4">
-        <img
+        <Image
           src="https://ttgbsdnzfrtznpmyzqga.supabase.co/storage/v1/object/public/resources/delivery.png"
           alt="Logo"
+          width={64} // Set the width here
+          height={64} // Set the height here
           className="h-6 w-8"
         />
         <div className="text-lg font-semibold">Adapt Trucking</div>
