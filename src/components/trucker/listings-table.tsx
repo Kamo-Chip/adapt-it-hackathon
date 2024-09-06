@@ -1,4 +1,3 @@
-import { ListingSearchParams } from "@/app/(signed-in)/listings/page";
 import { createClient } from "@/utils/server";
 import { addDays, endOfDay, format, startOfDay } from "date-fns";
 import ListingsBidDialog from "../listings-bid-dialog";
@@ -13,6 +12,8 @@ import {
   TableRow,
 } from "../ui/table";
 import TruckerListingDialog from "./listings-dialog";
+import { formatCurrency } from "@/lib/utils";
+import { ListingSearchParams } from "@/lib/types";
 
 export const LISTINGS_PER_PAGE = 10;
 
@@ -90,7 +91,7 @@ async function TruckerListingTable({
               {format(new Date(listing.dateLeaving), "dd MMM - hh:mm")}
             </TableCell>
             <TableCell>{listing.distance}</TableCell>
-            <TableCell>{listing.expectedCost}</TableCell>
+            <TableCell>{formatCurrency(listing.expectedCost)}</TableCell>
             <TruckerListingDialog listing={listing} />
           </TableRow>
         ))}

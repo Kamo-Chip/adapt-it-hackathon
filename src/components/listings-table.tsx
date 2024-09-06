@@ -1,13 +1,13 @@
-import { ListingSearchParams } from "@/app/(signed-in)/listings/page";
+import { ListingSearchParams } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/utils/server";
 import {
   addDays,
-  addHours,
   endOfDay,
   format,
-  nextDay,
-  startOfDay,
+  startOfDay
 } from "date-fns";
+import ListingsBidDialog from "./listings-bid-dialog";
 import ListingsPagination from "./pagination";
 import {
   Table,
@@ -18,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import ListingsBidDialog from "./listings-bid-dialog";
 
 export const LISTINGS_PER_PAGE = 10;
 
@@ -96,7 +95,7 @@ async function ListingTable({
               {format(new Date(listing.dateLeaving), "dd MMM - hh:mm")}
             </TableCell>
             <TableCell>{listing.distance}</TableCell>
-            <TableCell>{listing.expectedCost}</TableCell>
+            <TableCell>{formatCurrency(listing.expectedCost)}</TableCell>
             <ListingsBidDialog listing={listing} />
           </TableRow>
         ))}

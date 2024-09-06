@@ -60,7 +60,9 @@ function NavLinks() {
   const pathname = usePathname();
 
   const NAV_LINKS =
-    USER_TYPE === "consignee" ? CONSIGNEE_NAV_LINKS : TRUCKER_NAV_LINKS;
+    localStorage.getItem("role") === "business"
+      ? CONSIGNEE_NAV_LINKS
+      : TRUCKER_NAV_LINKS;
   return (
     <ul className="flex flex-col h-full w-full gap-4">
       {NAV_LINKS.map((link, idx) => {
@@ -68,6 +70,7 @@ function NavLinks() {
         if (idx === NAV_LINKS.length - 1)
           return (
             <TooltipWrapper
+              key={link.href}
               triggerContent={
                 <SignOutButton key={link.href}>
                   <ArrowLeftStartOnRectangleIcon className="mt-auto cursor-pointer w-6 h-6" />

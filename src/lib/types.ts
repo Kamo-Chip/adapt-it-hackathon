@@ -20,3 +20,10 @@ export type Bid = {
   consigneeId: string;
   listingId: number;
 };
+
+export type ListingSearchParams = {
+  page?: number;
+  date?: string;
+  from?: string;
+  to?: string;
+};

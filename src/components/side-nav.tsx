@@ -1,4 +1,4 @@
-import Image from "next/image";
+"use client";
 import NavLinks from "./nav-links";
 
 function SideNav() {
@@ -8,9 +8,11 @@ function SideNav() {
         <img
           src="https://ttgbsdnzfrtznpmyzqga.supabase.co/storage/v1/object/public/resources/delivery.png"
           alt="Logo"
-          className="h-16 w-16 p-2 mb-14 bg-white rounded-full object-cover object-center"
+          className="h-16 w-16 p-2 bg-white rounded-full object-cover object-center"
         />
-
+        <span className="text-white mb-14 capitalize mt-2 font-medium">
+          For {localStorage.getItem("role")}s
+        </span>
         <NavLinks />
       </div>
     </nav>

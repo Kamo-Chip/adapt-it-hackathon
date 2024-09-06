@@ -1,6 +1,7 @@
 import ListingFilters from "@/components/listing-filters";
 import ListingsTableSkeleton from "@/components/listings-table-skeleton";
 import PageHeader from "@/components/page-header";
+import { ListingSearchParams } from "@/lib/types";
 
 import dynamic from "next/dynamic";
 
@@ -11,12 +12,6 @@ const TruckerListingTable = dynamic(
     ssr: false,
   }
 );
-export type ListingSearchParams = {
-  page?: number;
-  date?: string;
-  from?: string;
-  to?: string;
-};
 
 export default async function Listing({
   searchParams,

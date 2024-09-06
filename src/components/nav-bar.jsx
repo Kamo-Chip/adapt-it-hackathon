@@ -27,6 +27,7 @@ const NavBar = () => {
           alt="Logo"
           className="h-6 w-8"
         />
+
         <div className="text-lg font-semibold">Adapt Trucking</div>
       </div>
 
