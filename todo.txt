@@ -10,3 +10,4 @@
 - Make my bids status dynamic
 - Create skeletons for each table
 - ADD SOME AI STUFF
+- Make user type dynamic
