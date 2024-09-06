@@ -11,12 +11,80 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
 import PageHeader from "@/components/page-header";
+import { useAuth } from "@clerk/nextjs";
+
 
 const insertFail = () => toast.error("Oops something went wrong!");
 const insertSuccess = () => toast.success("Listing has been created!");
 
 // Initialize the Supabase client
 const supabase = createClient();
+
+type LatLng = {
+  lat: number;
+  lng: number;
+  formattedAddress: string;
+};
+
+async function validateAddresses(from: string, to: string): Promise<[LatLng, LatLng]> {
+  const validateAddress = async (address: string): Promise<LatLng> => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    console.log(apiKey);
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to validate address');
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'ZERO_RESULTS') {
+      console.log(`No results found for address: ${address}`);
+      throw new Error('Address validation failed');
+    }
+
+    const result = data.results[0];
+    const formattedAddress = result.formatted_address;
+    const latitude = result.geometry.location.lat;
+    const longitude = result.geometry.location.lng;
+
+    return {
+      lat: latitude,
+      lng: longitude,
+      formattedAddress,
+    };
+  };
+
+  try {
+    const fromLatLng = await validateAddress(from);
+    const toLatLng = await validateAddress(to);
+
+    return [fromLatLng, toLatLng];
+  } catch (error) {
+    console.error(error);
+    throw new Error('One or both addresses failed validation');
+  }
+}
+
+// Haversine formula to calculate the distance between two coordinates
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Distance in kilometers
+};
 
 // Define the Zod schema for form validation, where truckId is expected to be a number
 const formSchema = z.object({
@@ -44,6 +112,7 @@ type FormSchemaType = z.infer<typeof formSchema>;
 export default function Component() {
   const [trucks, setTrucks] = useState<{ id: number; type: string }[]>([]); // Truck ID is a number
   const [truckType, setTruckType] = useState<number | undefined>(undefined); // Hold selected truck ID as a number
+  const { userId } = useAuth();  // Get userId from useAuth
 
   const {
     control,
@@ -74,27 +143,53 @@ export default function Component() {
 
   const onSubmit = async (data: FormSchemaType) => {
     const generateRandomId = () => Math.floor(Math.random() * 1000000000);
-
+  
     try {
+      console.log('Starting address validation...');
+  
+      // Validate the addresses and get the lat/lon for both 'from' and 'to'
+      const [fromLatLng, toLatLng] = await validateAddresses(data.from, data.to);
+  
+      console.log('Address validation completed:');
+      console.log('From Address:', fromLatLng);
+      console.log('To Address:', toLatLng);
+  
+      // Calculate the distance using the Haversine formula
+      const distance = calculateDistance(fromLatLng.lat, fromLatLng.lng, toLatLng.lat, toLatLng.lng);
+      console.log(`Calculated Distance: ${distance.toFixed(2)} km`);
+  
+      // Proceed with formatted data using validated lat/lon and calculated distance
       const formattedData = {
         id: generateRandomId(),
         from: data.from,
         to: data.to,
+        fromLat: fromLatLng.lat,
+        fromLon: fromLatLng.lng,
+        toLat: toLatLng.lat,
+        toLon: toLatLng.lng,
+        distance: distance, // Insert calculated distance here
+        truckerId: userId, // Ensure truckerId is part of the data
         dateLeaving: new Date(data.dateLeaving).toISOString(),
         dateArriving: new Date(data.dateArriving).toISOString(),
         expectedCost: data.price,
         truck: data.truckId, // truckId is sent as a number
       };
-
+  
+      console.log('Final data to insert into the database:', formattedData);
+  
+      // Insert the data into the Supabase listings table
       const { error } = await supabase.from("listings").insert([formattedData]);
-
+  
       if (error) {
+        console.log('Error inserting data:', error);
         insertFail();
       } else {
+        console.log('Data inserted successfully.');
         insertSuccess();
         reset(); // Reset the form after successful submission
       }
     } catch (error) {
+      console.error('Unexpected error during submission:', error);
       toast.error("Unexpected error during submission.");
     }
   };

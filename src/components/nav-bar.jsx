@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignInButton, useAuth } from "@clerk/nextjs";
 import clsx from "clsx";
-import { AlignJustify, CirclePlus, Route, Truck } from "lucide-react";
+import { AlignJustify, CirclePlus, Route, Truck, ReceiptText } from "lucide-react";
 import Link from "next/link";
 
 const NavBar = () => {
@@ -54,6 +54,12 @@ const NavBar = () => {
               <Route />
               <Link href="/mylistings" className="hover:text-gray-400 ml-2">
                 My Loads
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <ReceiptText />
+              <Link href="/mybids" className="hover:text-gray-400 ml-2">
+                My Bids
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
