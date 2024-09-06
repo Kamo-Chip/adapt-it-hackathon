@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - .:/app   # Mount your local directory to the container
+    ports:
+      - "3000:3000"
+    command: npm run dev   # Start the Next.js development server
