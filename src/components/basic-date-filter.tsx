@@ -23,7 +23,9 @@ function BasicDateFilter() {
         <Button
           variant={"secondary"}
           className="ml-auto"
-          onClick={() => replace(`${pathname}`)}
+          onClick={() => {
+            replace(`${pathname}`);
+          }}
         >
           Clear Filters
         </Button>

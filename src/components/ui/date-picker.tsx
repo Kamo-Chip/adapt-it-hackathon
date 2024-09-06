@@ -21,15 +21,15 @@ export default function DatePicker() {
   const { replace } = useRouter();
 
   type ListingFilter = {
-    type: "from" | "to" | "date";
-    value: string;
+    type?: "from" | "to" | "date";
+    value?: string;
   };
   const setFilters = (filter: ListingFilter) => {
     const params = new URLSearchParams(searchParams);
-    if (filter.type) {
+    if (filter.type && filter.value) {
       params.set("date", filter.value);
     } else {
-      params.delete(filter.type);
+      params.delete(filter.type!);
     }
     replace(`${pathname}?${params.toString()}`);
   };
@@ -37,9 +37,11 @@ export default function DatePicker() {
   useEffect(() => {
     if (date) {
       setFilters({ type: "date", value: date?.toISOString().split("T")[0] });
+    } else {
+      setFilters({});
     }
   }, [date]);
-  
+
   return (
     <Popover>
       <PopoverTrigger asChild>

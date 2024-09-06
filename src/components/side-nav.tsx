@@ -1,7 +1,50 @@
 "use client";
+import { createClient } from "@/utils/client";
 import NavLinks from "./nav-links";
+import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
 
 function SideNav() {
+  const supabase = createClient();
+  const { userId } = useAuth();
+  const [role, setRole] = useState<string>();
+  const router = useRouter();
+  const pathname = usePathname();
+  const getUserRole = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("roles")
+        .select("role")
+        .eq("user", userId);
+
+      if (!data || !data.length) throw new Error("Failed to fetch user role");
+
+      localStorage.setItem("role", data[0].role);
+      setRole(data[0].role);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserRole();
+  }, []);
+
+  useEffect(() => {
+    console.log(role);
+
+    if (role === "transporter") {
+      if (pathname === "/listings") {
+        router.push("my-listings");
+      }
+    } else {
+      if (pathname === "/my-listings") {
+        router.push("listings");
+      }
+    }
+  }, [role]);
+
   return (
     <nav className="h-full flex flex-col">
       <div className="bg-black flex flex-col h-full text-white p-2 pt-6 items-center">
@@ -10,10 +53,11 @@ function SideNav() {
           alt="Logo"
           className="h-16 w-16 p-2 bg-white rounded-full object-cover object-center"
         />
+
         <span className="text-white mb-14 capitalize mt-2 font-medium">
-          For {localStorage.getItem("role")}s
+          {role && `For ${role}s`}
         </span>
-        <NavLinks />
+        <NavLinks role={role} />
       </div>
     </nav>
   );

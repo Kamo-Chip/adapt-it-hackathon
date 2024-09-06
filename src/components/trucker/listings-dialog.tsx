@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { CreateBiddingActionState, deleteListing } from "@/lib/actions";
 import { Listing } from "@/lib/types";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "sonner";
+import TooltipWrapper from "../wrappers/tooltip-wrapper";
 
 function TruckerListingDialog({ listing }: { listing: Listing }) {
   const initialState: CreateBiddingActionState = { message: "" };
@@ -27,7 +29,7 @@ function TruckerListingDialog({ listing }: { listing: Listing }) {
           state.type === "success"
             ? `Trucker has been notified`
             : state.type === "error"
-            ? `Ensure all fields are filled in`
+            ? `Cannot remove. Listing has active bids`
             : "",
       });
     }
@@ -39,9 +41,15 @@ function TruckerListingDialog({ listing }: { listing: Listing }) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-1.5 absolute right-4" variant={"outline"}>
-          Remove
-        </Button>
+        <TooltipWrapper
+          triggerContent={
+            <TrashIcon
+              className="mt-3.5 absolute right-4 w-6 h-6 cursor-pointer"
+              onClick={() => console.log(listing)}
+            />
+          }
+          tooltipContent={"Remove"}
+        />
       </DialogTrigger>
       <DialogContent className="bg-background">
         <DialogHeader>

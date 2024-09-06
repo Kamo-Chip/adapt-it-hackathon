@@ -76,7 +76,7 @@ async function TruckerListingTable({
           <TableHead>Leaving</TableHead>
           <TableHead>Arriving</TableHead>
           <TableHead>Distance(km)</TableHead>
-          <TableHead>Expected Cost(R)</TableHead>
+          <TableHead>Ask Price(R)</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody suppressHydrationWarning>
