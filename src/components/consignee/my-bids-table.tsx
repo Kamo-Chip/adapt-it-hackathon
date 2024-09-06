@@ -13,12 +13,27 @@ import {
   TableRow,
 } from "../ui/table";
 
+// Define interfaces for the data
+interface Bid {
+  id: string;
+  consigneeId: string;
+  price: number;
+  listingId: string;
+  created_at: string;
+}
+
+interface Listing {
+  id: string;
+  expectedCost: number;
+}
+
 export const LISTINGS_PER_PAGE = 10;
 
 export type MyBidsSearchParams = {
   date?: string;
   page?: number;
 };
+
 async function MyBidsTable({
   searchParams,
 }: {
@@ -29,7 +44,7 @@ async function MyBidsTable({
   const from = (currentPage - 1) * LISTINGS_PER_PAGE;
   const to = currentPage * LISTINGS_PER_PAGE - 1;
 
-  let bids: any[] = [];
+  let bids: Bid[] = [];
   let totalCount = 0;
 
   const query = supabase
@@ -37,25 +52,13 @@ async function MyBidsTable({
     .select("*", { count: "exact" })
     .range(from, to);
 
-  // if (searchParams.date) {
-  //   query
-  //     .gte(
-  //       "dateLeaving",
-  //       addDays(startOfDay(new Date(searchParams.date)), 1).toISOString()
-  //     )
-  //     .lte(
-  //       "dateLeaving",
-  //       addDays(endOfDay(new Date(searchParams.date)), 1).toISOString()
-  //     );
-  // }
-
   const { data, count, error } = await query;
 
   if (!data || error) {
     throw new Error("Failed to fetch bids");
   }
 
-  bids = data;
+  bids = data as Bid[];
 
   const listingIds = bids.map((bid) => bid.listingId);
 
@@ -70,24 +73,21 @@ async function MyBidsTable({
   }
 
   // Group the bids by their corresponding listing
-  const groupedBids = listings.map((listing) => {
-    return {
-      listing,
-      bids: bids.filter((bid) => bid.listingId === listing.id),
-    };
-  });
+  // We don't use this variable right now, so it can be removed if not needed.
+  // const groupedBids = listings.map((listing) => {
+  //   return {
+  //     listing,
+  //     bids: bids.filter((bid) => bid.listingId === listing.id),
+  //   };
+  // });
 
   totalCount = count || 0;
-  if (!bids) {
-    return <>Loading...</>;
-  }
 
-  const totalPages = Math.ceil((totalCount || 0) / LISTINGS_PER_PAGE);
-
-  // Check if no bids are found
   if (bids.length === 0) {
     return <>No bids available.</>;
   }
+
+  const totalPages = Math.ceil(totalCount / LISTINGS_PER_PAGE);
 
   return (
     <Table className="border">
@@ -109,7 +109,7 @@ async function MyBidsTable({
             <TableCell>
               <Badge className="w-fit">
                 {formatCurrency(
-                  listings.find((listing) => listing.id === bid.listingId)
+                  (listings.find((listing) => listing.id === bid.listingId) as Listing)
                     .expectedCost
                 )}
               </Badge>
@@ -125,7 +125,7 @@ async function MyBidsTable({
       <TableFooter className="bg-transparent">
         <TableRow>
           <TableCell colSpan={6}>
-            {<ListingsPagination totalPages={totalPages} />}
+            <ListingsPagination totalPages={totalPages} />
           </TableCell>
         </TableRow>
       </TableFooter>

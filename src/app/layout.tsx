@@ -4,14 +4,14 @@ import "./globals.css";
 import NavBar from "@/components/nav-bar";
 import {
   ClerkProvider,
-  SignInButton,
-  SignedIn,
+  // SignInButton,
+  // SignedIn,
   SignedOut,
-  UserButton,
-  useAuth,
+  // UserButton,
+  // useAuth,
 } from "@clerk/nextjs";
 import { Toaster } from "sonner";
-import { getAuth } from "@clerk/nextjs/server";
+// import { getAuth } from "@clerk/nextjs/server";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

@@ -1,11 +1,11 @@
-import { ListingSearchParams } from "@/app/(signed-in)/listings/page";
+// import { ListingSearchParams } from "../app/(signed-in)/listings/page";
 import { createClient } from "@/utils/server";
 import {
   addDays,
-  addHours,
+  // addHours,
   endOfDay,
   format,
-  nextDay,
+  // nextDay,
   startOfDay,
 } from "date-fns";
 import ListingsPagination from "./pagination";
@@ -19,8 +19,28 @@ import {
   TableRow,
 } from "./ui/table";
 import ListingsBidDialog from "./listings-bid-dialog";
+interface ListingSearchParams {
+  date?: string;
+  page?: number;
+  from?: string;
+  to?: string;
+}
 
 export const LISTINGS_PER_PAGE = 10;
+interface Listing {
+  id: string;
+  from: string;
+  to: string;
+  dateLeaving: string;
+  distance: number;
+  expectedCost: number;
+  truckId: string;
+  truck: number; // Change the type to 'number'
+  truckerId: string;
+  dateArriving: string;
+  created_at: string;
+  updatedAt: string;
+}
 
 async function ListingTable({
   searchParams,
@@ -32,7 +52,7 @@ async function ListingTable({
   const from = (currentPage - 1) * LISTINGS_PER_PAGE;
   const to = currentPage * LISTINGS_PER_PAGE - 1;
 
-  let listings: any[] = [];
+  let listings: Listing[] = [];
   let totalCount = 0;
 
   const query = supabase

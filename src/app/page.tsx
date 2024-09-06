@@ -12,6 +12,6 @@ export default function Home() {
     if (isSignedIn) {
       router.push("/listings");
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, router]);
   return <main>Landing</main>;
 }

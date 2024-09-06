@@ -60,29 +60,31 @@ function NavLinks() {
   const pathname = usePathname();
 
   const NAV_LINKS =
-    USER_TYPE === "consignee" ? CONSIGNEE_NAV_LINKS : TRUCKER_NAV_LINKS;
+      USER_TYPE === "trucker" || USER_TYPE === "consignee" ? TRUCKER_NAV_LINKS : CONSIGNEE_NAV_LINKS;
+
   return (
     <ul className="flex flex-col h-full w-full gap-4">
       {NAV_LINKS.map((link, idx) => {
         const LinkIcon = link.icon;
-        if (idx === NAV_LINKS.length - 1)
+        if (idx === NAV_LINKS.length - 1) {
           return (
             <TooltipWrapper
+              key={link.href} // Added key prop here
               triggerContent={
-                <SignOutButton key={link.href}>
+                <SignOutButton>
                   <ArrowLeftStartOnRectangleIcon className="mt-auto cursor-pointer w-6 h-6" />
                 </SignOutButton>
               }
               tooltipContent={"Sign out"}
             />
           );
+        }
         return (
           <TooltipWrapper
-            key={link.href}
+            key={link.href} // Added key prop here
             triggerContent={
               <Link
                 href={link.href}
-                key={link.href}
                 className={clsx("p-1 text-white flex gap-4", {
                   "bg-gray-400 rounded-md text-accent-foreground":
                     pathname === link.href,
@@ -99,4 +101,5 @@ function NavLinks() {
     </ul>
   );
 }
+
 export default NavLinks;

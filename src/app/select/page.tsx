@@ -45,7 +45,7 @@ export default function Component() {
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Transporter</CardTitle>
             <CardDescription className="text-muted-foreground">
-              As a Transporter, you are responsible for safely moving goods from one location to another. You'll have
+              As a Transporter, you are responsible for safely moving goods from one location to another. You&apos;ll have
               access to our fleet of vehicles and logistics tools to optimize your deliveries.
             </CardDescription>
           </CardHeader>
@@ -64,7 +64,7 @@ export default function Component() {
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Consignee</CardTitle>
             <CardDescription className="text-muted-foreground">
-              As a Consignee, you'll receive goods from our Transporters. You can track your shipments, manage your
+              As a Consignee, you&apos;ll receive goods from our Transporters. You can track your shipments, manage your
               inventory, and communicate with Transporters through our platform.
             </CardDescription>
           </CardHeader>

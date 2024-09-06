@@ -1,7 +1,7 @@
-import { ListingSearchParams } from "@/app/(signed-in)/listings/page";
+// import { ListingSearchParams } from "@/app/(signed-in)/listings/page";
 import { createClient } from "@/utils/server";
 import { addDays, endOfDay, format, startOfDay } from "date-fns";
-import ListingsBidDialog from "../listings-bid-dialog";
+// import ListingsBidDialog from "../listings-bid-dialog";
 import ListingsPagination from "../pagination";
 import {
   Table,
@@ -13,6 +13,28 @@ import {
   TableRow,
 } from "../ui/table";
 import TruckerListingDialog from "./listings-dialog";
+interface ListingSearchParams {
+  date?: string;
+  page?: number;
+  from?: string;
+  to?: string;
+}
+
+// Define an interface for your listing type
+interface Listing {
+  id: string;
+  from: string;
+  to: string;
+  dateLeaving: string;
+  distance: number;
+  expectedCost: number;
+  truckId: string;
+  truck: number; // Change the type to 'number'
+  truckerId: string;
+  dateArriving: string;
+  created_at: string;
+  updatedAt: string;
+}
 
 export const LISTINGS_PER_PAGE = 10;
 
@@ -26,7 +48,7 @@ async function TruckerListingTable({
   const from = (currentPage - 1) * LISTINGS_PER_PAGE;
   const to = currentPage * LISTINGS_PER_PAGE - 1;
 
-  let listings: any[] = [];
+  let listings: Listing[] = [];
   let totalCount = 0;
 
   const query = supabase

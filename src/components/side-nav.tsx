@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import NavLinks from "./nav-links";
 
 function SideNav() {

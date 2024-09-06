@@ -15,7 +15,20 @@ import { Input } from "./ui/input";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
-
+interface Listing {
+  id: string;
+  from: string;
+  to: string;
+  dateLeaving: string;
+  distance: number;
+  expectedCost: number;
+  truckId: string;
+  truck: number; // Change the type to 'number'
+  truckerId: string;
+  dateArriving: string;
+  created_at: string;
+  updatedAt: string;
+}
 function ListingsBidDialog({ listing }: { listing: Listing }) {
   const initialState: CreateBiddingActionState = { message: "" };
   const [state, formAction] = useFormState(createBidding, initialState);

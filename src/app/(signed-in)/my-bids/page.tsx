@@ -1,7 +1,7 @@
 import ListingsTableSkeleton from "@/components/listings-table-skeleton";
 import PageHeader from "@/components/page-header";
 // import OpenBidsTable from "@/components/trucker/open-bids-table";
-import MyBidsTableFilter from "@/components/consignee/my-bids-table-filter";
+// import MyBidsTableFilter from "@/components/consignee/my-bids-table-filter";
 import dynamic from "next/dynamic";
 import BasicDateFilter from "@/components/basic-date-filter";
 const MyBidsTable = dynamic(

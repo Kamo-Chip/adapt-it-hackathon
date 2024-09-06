@@ -2,7 +2,6 @@
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function DatePicker() {
@@ -24,7 +23,9 @@ export default function DatePicker() {
     type: "from" | "to" | "date";
     value: string;
   };
-  const setFilters = (filter: ListingFilter) => {
+
+  // Use useCallback to ensure setFilters is stable
+  const setFilters = useCallback((filter: ListingFilter) => {
     const params = new URLSearchParams(searchParams);
     if (filter.type) {
       params.set("date", filter.value);
@@ -32,14 +33,14 @@ export default function DatePicker() {
       params.delete(filter.type);
     }
     replace(`${pathname}?${params.toString()}`);
-  };
+  }, [searchParams, replace, pathname]);
 
   useEffect(() => {
     if (date) {
-      setFilters({ type: "date", value: date?.toISOString().split("T")[0] });
+      setFilters({ type: "date", value: date.toISOString().split("T")[0] });
     }
-  }, [date]);
-  
+  }, [date, setFilters]);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
