@@ -40,11 +40,11 @@ function TruckerListingDialog({ listing }: { listing: Listing }) {
   }, [state]);
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <TooltipWrapper
           triggerContent={
             <TrashIcon
-              className="mt-3.5 absolute right-4 w-6 h-6 cursor-pointer"
+              className="mt-0 absolute right-4 w-6 h-6 cursor-pointer"
               onClick={() => console.log(listing)}
             />
           }
